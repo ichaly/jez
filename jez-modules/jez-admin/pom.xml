@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.jez</groupId>
+    <artifactId>jez-modules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.jez.modules</groupId>
+  <artifactId>jez-admin</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>jez-admin-beans</module>
+    <module>jez-admin-service</module>
+    <module>jez-admin-service-mybatis</module>
+    <module>jez-admin-api</module>
+  </modules>
+</project>
