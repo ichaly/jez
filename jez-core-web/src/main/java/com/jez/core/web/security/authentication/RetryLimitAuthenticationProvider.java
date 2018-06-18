@@ -1,6 +1,5 @@
 package com.jez.core.web.security.authentication;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,18 +29,19 @@ public class RetryLimitAuthenticationProvider extends DaoAuthenticationProvider 
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String username =
         (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
-    AtomicInteger retryCount = retryCountService.getByUsername(username);
-    if (retryCount.incrementAndGet() > maxAttempts) {
+    int retryCount = retryCountService.getByUsername(username);
+    if (retryCount >= maxAttempts) {
       if (lockUserService.lockByUsername(username)) {
         retryCountService.deleteByUsername(username);
       }
-      throw new LockedException(String.valueOf(retryCount.get()));
+      throw new LockedException(String.valueOf(retryCount));
     }
     try {
       Authentication result = super.authenticate(authentication);
       retryCountService.deleteByUsername(username);
       return result;
     } catch (AuthenticationException e) {
+      retryCountService.increaseByUsername(username);
       throw e;
     }
   }

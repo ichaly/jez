@@ -1,6 +1,5 @@
 package com.jez.core.web.security.authentication;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -24,14 +23,19 @@ public class CacheRetryCountService implements RetryCountService {
   }
 
   @Override
-  public AtomicInteger getByUsername(String username) {
+  public int getByUsername(String username) {
     ValueWrapper valueWrapper = cache.get(username);
     if (valueWrapper == null || valueWrapper.get() == null) {
-      AtomicInteger atomicInteger = new AtomicInteger();
-      cache.put(username, atomicInteger);
-      return atomicInteger;
+      int count = 0;
+      cache.put(username, count);
+      return count;
     }
-    return (AtomicInteger) valueWrapper.get();
+    return (int) valueWrapper.get();
+  }
+
+  @Override
+  public void increaseByUsername(String username) {
+    cache.put(username, getByUsername(username) + 1);
   }
 
   @Override
